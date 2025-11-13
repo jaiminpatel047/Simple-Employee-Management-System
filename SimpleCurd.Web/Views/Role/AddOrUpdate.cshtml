@@ -1,0 +1,152 @@
+﻿@model RoleDto
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <div class="mb-8 d-md-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-3 h2">
+                    @if (Model.IsActive == false && Model.Id > 0)
+                    {
+                        @("Role Deactive")
+                    }
+                    else
+                    {
+                        @(Model.Id > 0 ? "Update Role" : "Create Role")
+                    }
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Role">Role</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @if (Model.IsActive == false && Model.Id > 0)
+                            {
+                                @("Role Deactive")
+                            }
+                            else
+                            {
+                                @(Model.Id > 0 ? "Update Role" : "Create Role")
+                            }
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <!-- row -->
+    <div class="row mb-6">
+        <div class="col-xxl-9 col-xl-8 col-md-12 col-12">
+            <form id="rolefrm">
+                <input asp-for="Id" hidden/>
+                <div class="card card-lg mb-6">
+                    <div class="card-body px-6 py-5">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" asp-for="Name">
+                                    Name
+                                    <span class="text-danger">*</span>
+                                </label>
+                                @if (Model.IsActive == false && Model.Id > 0)
+                                {
+                                    <input type="text" class="form-control" asp-for="Name" placeholder="Enter project title" disabled>
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" asp-for="Name" placeholder="Enter project title">
+                                }
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="form-label" asp-for="Description">Description</label>
+                                @if (Model.IsActive == false && Model.Id > 0)
+                                {
+                                    <textarea type="text" class="form-control" asp-for="Description" placeholder="Description" disabled></textarea>
+                                }
+                                else
+                                {
+                                    <textarea type="text" class="form-control" asp-for="Description" placeholder="Description"></textarea>
+                                }
+                            </div>
+
+                            <div class="col-md-3 col-12">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="card card-lg mb-6">
+            </div>
+            <div class="mt-4 d-flex justify-content-end">
+                <a asp-action="Index" asp-controller="Role" class="btn btn-dark m-1">Back Role</a>
+                @if (Model.IsActive == false && Model.Id > 0)
+                {
+                    <button class="btn btn-subtle-primary me-2 m-1" id="reactiveBtn" data-id="@Model.Id">Reactive</button>
+                }
+                else
+                {
+                    @if (Model.Id > 0)
+                    {
+                        <button class="btn btn-primary me-2 m-1" id="updateBtn">Update</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary me-2 m-1" id="createBtn">Create</button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+         $(document).ready(function() {
+            $("#createBtn, #updateBtn").click(function() {
+                let detail = $("#rolefrm").serialize();
+
+                if (!$("#rolefrm").valid()) {
+                    return;
+                }
+
+                $.ajax({
+                      url: '@Url.Action("Inset", "Role")',
+                      method: 'Post',
+                      data: detail, 
+                      dataType: 'json',
+                      success: function(response) {
+                        if(response.success){
+                            $("#Name").val('');
+                            $("#Description").val('');
+
+                            Swal.fire({ title: "Drag me!",icon: "success", draggable: true });
+                        }else{
+                            Swal.fire({icon: "error", title: "Oops...", text: response.message,});
+                        }
+                      },
+                      error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        Swal.fire({icon: "error", title: "Oops...", text: "Something went wrong!",});
+                      },
+                });
+            });
+
+            $("#reactiveBtn").on("click", function () {
+            let id = $(this).data("id");
+               $.ajax({
+                url: '@Url.Action("ReActiveRole", "Role")' + '/' + id,
+                success: function(result) {
+                    if(result.success == true){
+                        location.reload();
+                    }
+                },
+               });
+            });
+        });
+    </script>
+}
+
+

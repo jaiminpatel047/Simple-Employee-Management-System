@@ -1,0 +1,275 @@
+﻿
+@{
+    ViewData["Title"] = "Department";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <!-- Page header -->
+        <div class="mb-8 d-md-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-3 h2">@ViewData["Title"]</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Department">Department</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">List</li>
+                    </ol>
+                </nav>
+            </div>
+            <div>
+                <a asp-action="AddOrUpdate" asp-controller="Department" class="btn btn-dark d-md-flex align-items-center gap-2">Create Department</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- col -->
+    <div class="col-12">
+        <div class="card card-lg" id="projectList" data-list="project_name,project_dates,project_budget,project_task,project_status,project_team">
+            <div class="card-header border-bottom-0">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <input type="search" class="form-control" placeholder="Search" id="searchInput">
+                    </div>
+                    <div class="col-lg-8 d-flex justify-content-end">
+                        <div class="d-flex align-items-center gap-2">
+                            <div>
+                                <button type="button" class="btn btn-primary" id="searchBtn">Search</button>
+                            </div>
+                            <div class="dropdown" id="isActiveDropdown">
+                                <a class="btn btn-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</a>
+
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item" data-active="true">Active</span></li>
+                                    <li><span class="dropdown-item" data-active="false">Deactive</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-white" id="referenceBtn">Reference</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive simplebar-scrollable-y" data-simplebar="init" style="height: 600px">
+                <div class="simplebar-wrapper" style="margin: 0px;">
+                    <div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask">
+                        <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                            <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
+                                <div class="simplebar-content" style="padding: 0px;">
+                                    <table class="table mb-0 text-nowrap table-centered" id="departmentTbl">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th>CreatedAt</th>
+                                                <th>IsActive</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="simplebar-placeholder" style="width: 1488px; height: 629px;"></div>
+                </div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 572px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div>
+            </div>
+            <div class="btn-toolbar card-footer border-top border-dashed d-flex flex-md-row flex-column justify-content-md-between align-items-md-center">
+                <p class="mb-0" id="totalRecords"></p>
+                <div class="d-flex flex-column flex-md-row gap-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label text-nowrap mb-0">Rows per page:</label>
+                        <div class="choices" data-type="select-one" tabindex="0" role="listbox" aria-haspopup="true" aria-expanded="false"><div class="form-select"><select class="form-select listjs-items-per-page choices__input" data-choices="" hidden="" tabindex="-1" data-choice="active"><option value="8" data-custom-properties="[object Object]">8</option></select><div class="choices__list choices__list--single"><div class="choices__item choices__item--selectable" data-item="" data-id="1" data-value="8" data-custom-properties="[object Object]" aria-selected="true">8</div></div></div><div class="choices__list choices__list--dropdown" aria-expanded="false"><div class="choices__list" role="listbox"><div id="choices--mi2n-item-choice-1" class="choices__item choices__item--choice is-selected choices__item--selectable is-highlighted" role="option" data-choice="" data-id="1" data-value="8" data-select-text="" data-choice-selectable="" aria-selected="true">8</div><div id="choices--mi2n-item-choice-2" class="choices__item choices__item--choice choices__item--selectable" role="option" data-choice="" data-id="2" data-value="10" data-select-text="" data-choice-selectable="">10</div></div></div></div>
+                    </div>
+                    <div>
+                        <div class="pagination-buttons d-flex">
+                            <button class="btn btn-white prev" disabled="">Previous</button>
+                            <ul class="pagination mb-0 ms-1"><li class="page-item active"><a class="page-link page" href="#" data-i="1" data-page="10">1</a></li></ul>
+                            <button class="btn btn-white next" disabled="">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var table;
+        var activeFilter = null;
+        var currentPage = 1;
+        var pageSize = 8; 
+
+        $(document).ready(function () {
+
+            table = $('#departmentTbl').DataTable({
+                processing: true,
+                serverSide: true,
+                paging: false,
+                filter: false,
+                ajax: {
+                    url: '@Url.Action("GetAll", "Department")',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: function (d) {
+                         d.Search = { value: $("#searchInput").val(), regex: false };
+                         d.IsActive = activeFilter;
+                        return JSON.stringify(d);
+                    },
+                    dataSrc: function (json) {
+                           $("#totalRecords").text(json.recordsTotal + " entries found");
+                           buildPagination(json.recordsTotal);
+                            return json.data;
+                    }
+                },
+                columns: [
+                    { data: 'id', name: 'Id' },
+                    { data: 'name', name: 'Name' },
+                    { data: 'description', name: 'Description' },
+                    { data: 'createdAt', name: 'CreatedAt' },
+                    {
+                        data: 'isActive',
+                        name: 'IsActive',
+                        orderable: false,
+                        render: function (data) {
+                            return data
+                                ? `<span class="badge text-success-emphasis bg-success-subtle rounded-pill">Active</span>`
+                                : `<span class="badge text-danger-emphasis bg-danger-subtle rounded-pill">Deactive</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+
+                            const updateUrl = '@Url.Action("AddOrUpdate", "Department")' + '/' + row.id;
+
+                            let updateBtn = `
+                                <a href="${updateUrl}" class="btn btn-ghost btn-icon btn-sm rounded-circle texttooltip">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke-width="1.5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                        <path d="M0 0h24v24H0z" stroke="none"></path>
+                                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                                        <path d="M16 5l3 3"></path>
+                                    </svg>
+                                </a>
+                            `;
+
+                            let viewBtn = "";
+                            let deleteBtn = "";
+
+                            if (row.isActive) {
+                                viewBtn = `
+                                    <button class="btn-view-model btn btn-ghost btn-icon btn-sm rounded-circle texttooltip" data-id="${row.id}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke-width="1.5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                            <path d="M0 0h24v24H0z" stroke="none"></path>
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"></path>
+                                        </svg>
+                                    </button>
+                                `;
+
+                                deleteBtn = `
+                                    <button class="btn-delete btn btn-ghost btn-icon btn-sm rounded-circle texttooltip" data-id="${row.id}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke-width="1.5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                            <path d="M0 0h24v24H0z" stroke="none"></path>
+                                            <path d="M4 7l16 0"></path>
+                                            <path d="M10 11l0 6"></path>
+                                            <path d="M14 11l0 6"></path>
+                                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+                                        </svg>
+                                    </button>
+                                `;
+                            }
+
+                            return viewBtn + updateBtn + deleteBtn;
+                        }
+                    }
+                ]
+            });
+
+
+            $("#searchBtn").on("click", function() {
+                table.draw();
+            });
+
+             $("#referenceBtn").on("click", function() {
+                 $("#searchInput").val("");
+                 activeFilter = null;
+                table.ajax.reload();
+            });
+
+            
+        });
+
+        $(document).on("click", ".page-link.page", function (e) {
+            e.preventDefault();
+            currentPage = parseInt($(this).data("page"));
+            table.ajax.reload();
+        });
+
+            $(".next").on("click", function () {
+                currentPage++;
+                table.ajax.reload();
+            });
+
+            $(".prev").on("click", function () {
+                currentPage--;
+                table.ajax.reload();
+            });
+
+        
+
+        // View Modal
+        $(document).on("click", ".btn-view-model", function () {
+            let id = $(this).data("id");
+            $.get('@Url.Action("View", "Department")' + '/' + id, function (result) {
+                $("#mainContent").html(result);
+                $('#commonModals').modal('show');
+            });
+        });
+
+        $(document).on("click", "#isActiveDropdown .dropdown-item", function () {
+            activeFilter = $(this).data("active"); // true / false
+            table.draw(); // Refresh table data
+        });
+
+        // Delete Role
+        $(document).on("click", ".btn-delete", function () {
+            let id = $(this).data("id");
+            $.post('@Url.Action("Delete", "Department")' + '/' + id, function (result) {
+                if (result) {
+                    table.ajax.reload();
+                }
+            });
+        });
+
+
+        function buildPagination(totalRecords) {
+            const totalPages = Math.ceil(totalRecords / pageSize);
+            const $pagination = $(".pagination");
+            $pagination.empty();
+
+            for (let i = 1; i <= totalPages; i++) {
+                const activeClass = i === currentPage ? "active" : "";
+                $pagination.append(`
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link page" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `);
+            }
+
+            // Enable/disable next & prev buttons
+            $(".prev").prop("disabled", currentPage === 1);
+            $(".next").prop("disabled", currentPage === totalPages || totalPages === 0);
+        }
+
+    </script>
+}
+

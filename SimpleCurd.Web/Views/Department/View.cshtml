@@ -1,0 +1,36 @@
+﻿@model DepartmentDto
+@{
+    ViewData["Title"] = "Department";
+    Layout = null;
+}
+
+<div class="card card-lg mb-6">
+    <!-- card body -->
+    <div class="card-body">
+        <div class="mb-4">
+            <h5 class="mb-1">@ViewData["Title"]</h5>
+            <span class="text-secondary">Budget Allocation Overview:</span>
+        </div>
+        <div class="fs-2 fw-bold mb-3">@Model.Name</div>
+        <div class="d-flex justify-content-between align-items-center gap-1 w-100 mb-2">
+            <div>Description :</div>
+            <div>@Model.Description</div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center gap-1 w-100 mb-4">
+            <div>CreatedAt :</div>
+            <div>@Model.CreatedAt</div>
+        </div>
+        <div class="d-flex justify-content-between gap-3">
+            @if (Model.IsActive == false)
+            {
+                <button class="btn btn-danger w-100" disabled>Disactive</button>
+            }
+            else
+            {
+                <button class="btn btn-primary w-100" disabled>Active</button>
+            }
+            <a href="#!" class="btn btn-white w-100">View Details</a>
+        </div>
+    </div>
+</div>
+

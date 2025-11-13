@@ -1,0 +1,209 @@
+﻿@model EmployeeDto
+@{
+    ViewData["Title"] = "AddOrUpdate";
+    bool isDisabled = (Model.IsActive == false && Model.Id > 0);
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-md-12 col-12">
+        <!-- Page header -->
+        <div class="mb-8 d-md-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-3 h2">
+                    @if (Model.IsActive == false && Model.Id > 0)
+                    {
+                        @("Deactive")
+                    }
+                    else
+                    {
+                        @(Model.Id > 0 ? "Update" : "Create")
+                    }
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Employee">Employee List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @if (Model.IsActive == false && Model.Id > 0)
+                            {
+                                @("Employee Deactive")
+                            }
+                            else
+                            {
+                                @(Model.Id > 0 ? "Update Employee" : "Create Employee")
+                            }
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <div>
+                <a class="btn btn-dark" asp-action="Index" asp-controller="Employee"> Back to Employee</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+          <!-- row -->
+          <form class="row g-6 justify-content-center" id="employeFrm">
+              <input asp-for="Id" hidden />
+            <div class="col-xl-8 col-12">
+              <div class="card mb-6 card-lg">
+                <div class="card-header border-bottom border-dashed">
+                  <h5>Properties</h5>
+                  <p class="mb-0 text-secondary">Additional functions and attributes...</p>
+                </div>
+                <!-- card body -->
+                <div class="card-body px-6 py-5">
+                  <div class="row g-4">
+                    <div class="col-lg-6">
+                       <label class="form-label" asp-for="FirstName"></label>
+                            <input type="text" asp-for="FirstName" class="form-control" placeholder="First Name" disabled="@(isDisabled)">
+                      <div class="invalid-feedback">Please enter code.</div>
+                    </div>
+                    <!-- input -->
+                    <div class="col-lg-6">
+                       <label class="form-label" asp-for="LastName"></label>
+                            <input type="text" asp-for="LastName" class="form-control" placeholder="Last Name" disabled="@(isDisabled)">
+                      <div class="invalid-feedback">Please enter SKU.</div>
+                    </div>
+                        <div class="col-lg-6">
+                            <label class="form-label" asp-for="Email"></label>
+                            <input type="text" asp-for="Email" class="form-control" placeholder="Email" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter code.</div>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="form-label" asp-for="Phone"></label>
+                            <input type="text" asp-for="Phone" class="form-control" placeholder="Phone" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label" asp-for="DateOfBirth"></label>
+                            <input type="text" asp-for="DateOfBirth" class="form-control" placeholder="DateOfBirth" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label" asp-for="DepartmentId"></label>
+                            <select asp-for="DepartmentId" asp-items="ViewBag.department" class="form-control" disabled="@(isDisabled)">
+                                <option value=""> Select Department </option>
+                            </select>
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label" asp-for="RoleId"></label>
+                            <select asp-for="RoleId" asp-items="ViewBag.roles" class="form-control" disabled="@(isDisabled)">
+                                <option value=""> Select Role </option>
+                            </select>
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- card -->
+              <div class="card mb-6 card-lg">
+                <div class="card-header border-bottom border-dashed">
+                    <h5>Address</h5>
+                  <p class="mb-0 text-secondary">Price related inputs</p>
+                </div>
+                <!-- card body -->
+                <div class="card-body px-6 py-5">
+                  <div class="mb-4">
+                        <label class="form-label" asp-for="Address.Street"></label>
+                        <input type="text" asp-for="Address.Street" class="form-control ps-7" placeholder="Street" disabled="@(isDisabled)">
+                  </div>
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <label class="form-label" asp-for="Address.City"></label>
+                            <input type="text" asp-for="Address.City" class="form-control" placeholder="City" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter code.</div>
+                        </div>
+                        <!-- input -->
+                        <div class="col-lg-3">
+                            <label class="form-label" asp-for="Address.State"></label>
+                            <input type="text" asp-for="Address.State" class="form-control" placeholder="State" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label" asp-for="Address.PostalCode"></label>
+                            <input type="text" asp-for="Address.PostalCode" class="form-control" placeholder="PostalCode" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter code.</div>
+                        </div>
+                        <!-- input -->
+                        <div class="col-lg-3">
+                            <label class="form-label" asp-for="Address.Country"></label>
+                            <input type="text" asp-for="Address.Country" class="form-control" placeholder="Country" disabled="@(isDisabled)">
+                            <div class="invalid-feedback">Please enter SKU.</div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- button -->
+                <div>
+                    @if (Model.IsActive == false && Model.Id > 0)
+                    {
+                          <span class="btn btn-subtle-primary me-2 m-1" id="reactiveBtn" data-id="@Model.Id">Reactive</span>
+                    }
+                    else
+                    {
+                        @if (Model.Id > 0)
+                        {
+                             <span class="btn btn-primary me-2 m-1" id="updateBtn">Update</span>
+                        }
+                        else
+                        {
+                            <span class="btn btn-primary me-2 m-1" id="createBtn">Create</span>
+                        }
+                    }
+                </div>
+            </div>
+          </form>
+
+    
+        </div>
+
+
+@section Scripts {
+    <script>
+         $(document).ready(function() {
+            $("#createBtn, #updateBtn").click(function() {
+                let detail = $("#employeFrm").serialize();
+
+                if (!$("#employeFrm").valid()) {
+                    return;
+                }
+
+                $.ajax({
+                      url: '@Url.Action("Inset", "Employee")',
+                      method: 'Post',
+                      data: detail,
+                      dataType: 'json',
+                      success: function(response) {
+                        if(response.success){
+                           $('#employeFrm')[0].reset();
+
+                            Swal.fire({ title: "Drag me!",icon: "success", draggable: true });
+                        }else{
+                            Swal.fire({icon: "error", title: "Oops...", text: response.message,});
+                        }
+                      },
+                      error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        Swal.fire({icon: "error", title: "Oops...", text: "Something went wrong!",});
+                      },
+                });
+            });
+
+            $("#reactiveBtn").on("click", function () {
+            let id = $(this).data("id");
+               $.ajax({
+                url: '@Url.Action("ReActiveRole", "Employee")' + '/' + id,
+                success: function(result) {
+                    if(result.success == true){
+                        location.reload();
+                    }
+                },
+               });
+            });
+        });
+    </script>
+}
