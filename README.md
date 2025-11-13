@@ -146,7 +146,7 @@ list = list.Skip(request.Start).Take(request.Length);
 
 ### 1️⃣ Clone Repository
 ```bash
-git clone https://github.com/YourUsername/EmployeeManagementSystem.git
+git clone https://github.com/jaiminpatel047/SimpleCurd.Web.git
 ```
 
 ### 2️⃣ Update Database Connection
