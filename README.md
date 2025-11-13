@@ -1,0 +1,1 @@
+# SimpleCurd.Web
